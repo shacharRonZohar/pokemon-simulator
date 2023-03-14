@@ -1,14 +1,28 @@
-import { PrismaClient } from "@prisma/client";
-
+import { type Db, MongoClient } from "mongodb";
 import { env } from "~/env.mjs";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+let dbConn: Db | null = null;
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log:
-      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-  });
+export async function getCollection(collectionName: string) {
+  try {
+    const db = await connect();
+    const collection = db.collection(collectionName);
+    return collection;
+  } catch (err) {
+    console.error("Cannot get collection", err);
+    throw err;
+  }
+}
 
-if (env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+async function connect() {
+  if (dbConn) return dbConn;
+  try {
+    const client = await MongoClient.connect(env.DATABASE_URL);
+    const db = client.db(env.DATABASE_NAME);
+    dbConn = db;
+    return db;
+  } catch (err) {
+    console.error("Cannot Connect to DB", err);
+    throw err;
+  }
+}

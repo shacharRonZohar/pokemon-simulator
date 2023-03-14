@@ -27,18 +27,20 @@ export const pokemonRouter = createTRPCRouter({
       sprites: { front_default: img },
     } = parsedPokemon
     const pokemon = { name, img, pokedexNumber }
-    await _savePokemonToDb(pokemon)
+    await _savePokemonToDataDb(pokemon)
     return pokemon
   }),
-  catchPokemon: publicProcedure.input(z.number()).mutation(async ({ input: pokedexNumber }) => {
-    console.log(pokedexNumber)
-    const pokemonInDb = await _fetchPokemonFromDb(pokedexNumber)
-    const isCaught = _getRandomIsCaught()
-    console.log(isCaught)
-    if (!isCaught) return false
-
-    return true
-  }),
+  catchPokemon: publicProcedure
+    .input(z.object({ pokedexNumber: z.number(), email: z.string().email() }))
+    .mutation(async ({ input: { pokedexNumber, email } }) => {
+      console.log(pokedexNumber)
+      const pokemonInDb = (await _fetchPokemonFromDb(pokedexNumber))!
+      const isCaught = _getRandomIsCaught()
+      console.log(isCaught)
+      if (!isCaught) return false
+      await _addPokemonToUser(email, pokemonInDb._id)
+      return true
+    }),
   getAll: publicProcedure.query(async () => {
     const res = await (await getCollection('pokemon')).find({}).toArray()
     console.log(res)
@@ -67,9 +69,23 @@ function _parsePokemonFromApi(pokemon: any) {
   return parsedPokemon
 }
 
-async function _savePokemonToDb(pokemon: RawPokemon) {
+async function _savePokemonToDataDb(pokemon: RawPokemon) {
   return (await getCollection('pokemon-data')).insertOne(pokemon)
 }
+
+async function _addPokemonToUser(email: string, pokemonId: string) {
+  return (await getCollection('caught-pokemon')).updateOne(
+    {
+      email,
+    },
+    {
+      $push: {
+        pokemonIds: pokemonId,
+      },
+    },
+  )
+}
+
 function getRandomPokedexNumber() {
   return Math.floor(Math.random() * 898) + 1
 }

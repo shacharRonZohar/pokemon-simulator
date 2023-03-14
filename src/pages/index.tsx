@@ -1,10 +1,22 @@
 import { type NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useState } from 'react'
 
 import { api } from '~/utils/api'
 
 const Home: NextPage = () => {
+  const [email, setEmail] = useState('')
+  const onEmailChange = ({ currentTarget: { value } }: React.FormEvent<HTMLInputElement>) => {
+    // console.log(ev.a)
+    setEmail(value)
+  }
+
+  const onSubmitEmail = (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault()
+    console.log(email)
+  }
+
   return (
     <>
       <Head>
@@ -22,6 +34,10 @@ const Home: NextPage = () => {
           you, otherwise you can just click the button below to start the encounter.
         </p>
         {/* TODO: Add Email input */}
+        <form onSubmit={onSubmitEmail}>
+          <input type="email" onChange={onEmailChange} value={email} className="border-black" />
+          <button>Submit Email</button>
+        </form>
         <p className="text-2xl text-white">You can also check out the code on Github.</p>
         {/* TODO: Add github link */}
         <p className="text-2xl text-white">Good luck!</p>

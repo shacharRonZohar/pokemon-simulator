@@ -10,7 +10,7 @@ const Encounter: NextPage = () => {
   const { data: isCaught, mutate } = api.pokemon.catchPokemon.useMutation()
   const onThrowBall = () => {
     if (!data) return
-    mutate(data.pokedexNumber)
+    mutate({ pokedexNumber: data.pokedexNumber, email: 'test@gmail.com' })
     console.log(isCaught)
     if (isCaught) alert('You caught the pokemon!')
   }

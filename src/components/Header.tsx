@@ -1,4 +1,5 @@
-import GenericNavLink from './GenericNavLink'
+import MainNavBar from './NavBar/MainNavBar'
+import GenericNavLink from './NavBar/NavLink/GenericNavLink'
 
 const Header: React.FC = () => {
   // const navClass =
@@ -7,30 +8,9 @@ const Header: React.FC = () => {
       <GenericNavLink href="/">
         <span className="text-2xl font-bold text-white">Pokemon Simulator</span>
       </GenericNavLink>
-      <NavBar
-        navClass="flex items-center justify-between bg-gradient-to-b from-[#2e026d] to-[#15162c] p-4"
-        routes={['about', 'encounter']}
-      ></NavBar>
+      <MainNavBar></MainNavBar>
       {/* </nav> */}
     </header>
-  )
-}
-
-interface NavBarProps {
-  navClass?: string
-  routes: string[]
-}
-
-const NavBar: React.FC<NavBarProps> = ({ navClass, routes }) => {
-  //   console.log(children)
-  return (
-    <nav className={navClass}>
-      {routes.map(route => (
-        <GenericNavLink href={`/${route}`} key={route}>
-          {route}
-        </GenericNavLink>
-      ))}
-    </nav>
   )
 }
 

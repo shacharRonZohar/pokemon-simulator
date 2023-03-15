@@ -2,12 +2,13 @@ import Link from 'next/link'
 
 interface GenericNavLinkProps {
   href: string
+  linkClass?: string
   children: React.ReactNode
 }
 
-const GenericNavLink: React.FC<GenericNavLinkProps> = ({ href, children }) => {
+const GenericNavLink: React.FC<GenericNavLinkProps> = ({ href, linkClass, children }) => {
   return (
-    <Link href={href} className="capitalize">
+    <Link href={href} className={`capitalize ${linkClass ?? ''}`}>
       {children}
     </Link>
   )

@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { customeFetch } from '~/server/util'
 import { getCollection } from '~/server/db'
 import type { ObjectId, WithId } from 'mongodb'
+import type { Pokemon, RawPokemon } from '~/types'
 
 export const pokemonService = {
   fetchPokemon,
@@ -10,14 +11,7 @@ export const pokemonService = {
   addPokemonToUser,
 }
 
-export interface Pokemon {
-  _id: string | ObjectId
-  name: string
-  img: string
-  pokedexNum: number
-}
-
-type RawPokemon = Omit<Pokemon, '_id'>
+// type RawPokemon = Omit<Pokemon, '_id'>
 
 async function getRandomPokemon() {
   const pokedexNum = _getRandomPokedexNumber()

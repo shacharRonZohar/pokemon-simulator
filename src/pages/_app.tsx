@@ -2,6 +2,7 @@ import type { AppType } from 'next/app'
 import MainLayout from '~/components/MainLayout'
 import { api } from '~/utils/api'
 
+import '~/styles/pokeball.scss'
 import '~/styles/globals.css'
 
 const MyApp: AppType = ({ Component, pageProps }) => {

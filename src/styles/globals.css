@@ -1,12 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import 'animate.css';
 
 body {
   min-height: 100dvh;
 }
 
-.rubber-band {
-  animation: rubberBand 1200ms infinite;
-}

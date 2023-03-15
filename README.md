@@ -18,7 +18,7 @@ The stack utilises a modular model of operations, where each part is inccrementa
 
 The project also uses MongoDB as a databse, and Atlas as a database provider.
 
-You can view the [deployed project here:](https://pokemon-simulator.vercel.app/)
+You can view the [deployed project here](https://pokemon-simulator.vercel.app/)
 
 # Operation Instructions
 

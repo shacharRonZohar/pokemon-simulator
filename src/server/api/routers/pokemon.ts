@@ -2,44 +2,41 @@ import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 import { getCollection } from '~/server/db'
-import { customeFetch } from '~/server/util'
+import { pokemonService } from '../services/pokemon'
 
 interface Pokemon {
   _id: string
   name: string
   img: string
-  pokedexNumber: number
+  pokedexNum: number
 }
 
 type RawPokemon = Omit<Pokemon, '_id'>
 
 export const pokemonRouter = createTRPCRouter({
   getEncounter: publicProcedure.query(async () => {
-    const pokedexNumber = getRandomPokedexNumber()
-    const pokemonInDb = await _fetchPokemonFromDb(pokedexNumber)
-    if (pokemonInDb) return pokemonInDb
-
-    const res = await _fetchPokemonFromApi(pokedexNumber)
-    if (!res) throw new Error('Could not fetch pokemon')
-    const parsedPokemon = _parsePokemonFromApi(res)
-    const {
-      name,
-      sprites: { front_default: img },
-    } = parsedPokemon
-    const pokemon = { name, img, pokedexNumber }
-    await _savePokemonToDataDb(pokemon)
-    return pokemon
+    return pokemonService.getRandomPokemon()
   }),
   catchPokemon: publicProcedure
-    .input(z.object({ pokedexNumber: z.number(), email: z.string().email() }))
-    .mutation(async ({ input: { pokedexNumber, email } }) => {
-      console.log(pokedexNumber)
-      const pokemonInDb = (await _fetchPokemonFromDb(pokedexNumber))!
-      const isCaught = _getRandomIsCaught()
-      console.log(isCaught)
-      if (!isCaught) return false
-      await _addPokemonToUser(email, pokemonInDb._id)
-      return true
+    .input(
+      z.object({
+        pokedexNum: z.number(),
+        email: z.string().email().optional().default('guest@shachar.com'),
+      }),
+    )
+    .mutation(async ({ input: { pokedexNum, email } }) => {
+      console.log(pokedexNum)
+      try {
+        const pokemonInDb = await pokemonService.fetchPokemon(pokedexNum)
+        const isCaught = pokemonService.getRandomIsCaught()
+        if (!isCaught) return false
+
+        await pokemonService.addPokemonToUser(email, pokemonInDb._id)
+        return true
+      } catch (err) {
+        console.log('🚀 ~ file: pokemon.ts:46 ~ .mutation ~ err:', err)
+        return false
+      }
     }),
   getAll: publicProcedure.query(async () => {
     const res = await (await getCollection('pokemon')).find({}).toArray()
@@ -47,49 +44,3 @@ export const pokemonRouter = createTRPCRouter({
     return res
   }),
 })
-
-async function _fetchPokemonFromApi(pokedexNum: number) {
-  return customeFetch(`https://pokeapi.co/api/v2/pokemon/${pokedexNum}`)
-}
-
-async function _fetchPokemonFromDb(pokedexNum: number) {
-  return (await getCollection<Pokemon>('pokemon-data')).findOne({
-    pokedexNumber: pokedexNum,
-  })
-}
-
-function _parsePokemonFromApi(pokemon: any) {
-  const pokemonSchema = z.object({
-    name: z.string(),
-    sprites: z.object({
-      front_default: z.string(),
-    }),
-  })
-  const parsedPokemon = pokemonSchema.parse(pokemon)
-  return parsedPokemon
-}
-
-async function _savePokemonToDataDb(pokemon: RawPokemon) {
-  return (await getCollection('pokemon-data')).insertOne(pokemon)
-}
-
-async function _addPokemonToUser(email: string, pokemonId: string) {
-  return (await getCollection('caught-pokemon')).updateOne(
-    {
-      email,
-    },
-    {
-      $push: {
-        pokemonIds: pokemonId,
-      },
-    },
-  )
-}
-
-function getRandomPokedexNumber() {
-  return Math.floor(Math.random() * 898) + 1
-}
-
-function _getRandomIsCaught() {
-  return Math.random() < 0.5
-}

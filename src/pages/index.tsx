@@ -5,7 +5,7 @@ import { type NextPage } from 'next'
 const Home: NextPage = () => {
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-red-400 to-[#15162c]">
+      <main className="flex min-h-screen flex-col items-center justify-center ">
         <h1 className="pb-3 text-4xl font-bold text-white">Welcome to my Pokemon simulator app!</h1>
         <p className="pb-3 text-2xl text-white">
           This is a simple app that simulates a Pokemon encounter.

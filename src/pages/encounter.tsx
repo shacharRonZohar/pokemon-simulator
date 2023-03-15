@@ -4,6 +4,8 @@ import { api } from '~/utils/api'
 
 const Encounter: NextPage = () => {
   const { data, isError, isLoading } = api.pokemon.getEncounter.useQuery(undefined, {
+    refetchOnMount: false,
+    refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   })
 
@@ -16,7 +18,7 @@ const Encounter: NextPage = () => {
   }
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-emerald-500">
+      <main className="flex min-h-screen flex-col items-center justify-center">
         <h1 className="text-4xl font-bold text-white">Encounter</h1>
         {isLoading && <p className="text-2xl text-white">Loading...</p>}
         {isError && <p className="text-2xl text-white">Error!</p>}

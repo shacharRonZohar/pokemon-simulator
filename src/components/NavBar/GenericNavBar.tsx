@@ -1,3 +1,4 @@
+import React from 'react'
 import { NavBarProvider } from './Context'
 import GenericNavLink from './NavLink/GenericNavLink'
 
@@ -10,11 +11,16 @@ interface GenericNavBarProps {
 const GenericNavBar: React.FC<GenericNavBarProps> = ({ navClass, routes, children }) => {
   return (
     <nav className={navClass}>
-      {routes.map(route => (
-        <NavBarProvider value={route} key={route}>
-          <GenericNavLink href={`/${route}`}>{children}</GenericNavLink>
-        </NavBarProvider>
-      ))}
+      {routes.map(route => {
+        let href = '/'
+        if (route !== 'home') href += route
+
+        return (
+          <NavBarProvider value={route} key={route}>
+            <GenericNavLink href={href}>{children}</GenericNavLink>
+          </NavBarProvider>
+        )
+      })}
     </nav>
   )
 }

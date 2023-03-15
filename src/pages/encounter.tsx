@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Image from 'next/image'
+import Loader from '~/components/Loader/Loader'
 import { api } from '~/utils/api'
 
 const Encounter: NextPage = () => {
@@ -16,11 +17,12 @@ const Encounter: NextPage = () => {
     console.log(isCaught)
     if (isCaught) alert('You caught the pokemon!')
   }
+  // return <Loader></Loader>
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <h1 className="text-4xl font-bold text-white">Encounter</h1>
-        {isLoading && <p className="text-2xl text-white">Loading...</p>}
+        {isLoading && <Loader></Loader>}
         {isError && <p className="text-2xl text-white">Error!</p>}
         {data && (
           <section className="flex">

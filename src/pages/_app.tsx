@@ -1,5 +1,5 @@
 import type { AppType } from 'next/app'
-import MainLayout from '~/components/layout'
+import MainLayout from '~/components/MainLayout'
 import { api } from '~/utils/api'
 
 import '~/styles/globals.css'

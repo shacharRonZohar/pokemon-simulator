@@ -11,9 +11,9 @@ const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         <meta name="description" content="A pokemon simulator built for educational purposes" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="grid grid-cols-main-layout bg-gradient-to-b from-red-400 to-[#15162c]">
+      <div className="grid min-h-screen-full grid-cols-main-layout grid-rows-main-layout bg-gradient-to-b from-red-400 to-[#15162c]">
         <MainHeader />
-        <main className="col-main-layout-item">{children}</main>
+        {children}
         {/* <Footer /> */}
       </div>
     </>

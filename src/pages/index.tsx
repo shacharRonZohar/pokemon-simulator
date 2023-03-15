@@ -19,11 +19,11 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>Pokemon Simulator</title>
         <meta name="description" content="A pokemon simulator built for educational purposes" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </Head> */}
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <h1 className="text-4xl font-bold text-white">Welcome to my Pokemon Simulator App!</h1>
         <p className="text-2xl text-white">

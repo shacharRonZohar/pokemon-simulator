@@ -1,11 +1,11 @@
-import Header from './Header'
+import MainHeader from './MainHeader'
 
 import type { ReactNode } from 'react'
 
 const MainLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div>
-      <Header />
+      <MainHeader />
       <main>{children}</main>
       {/* <Footer /> */}
     </div>

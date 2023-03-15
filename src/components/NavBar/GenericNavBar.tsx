@@ -1,9 +1,9 @@
-import { NavBarContext } from './Context'
+import { NavBarProvider } from './Context'
 import GenericNavLink from './NavLink/GenericNavLink'
 
 interface GenericNavBarProps {
-  navClass?: string
   routes: string[]
+  navClass?: string
   children: React.ReactNode
 }
 
@@ -11,9 +11,9 @@ const GenericNavBar: React.FC<GenericNavBarProps> = ({ navClass, routes, childre
   return (
     <nav className={navClass}>
       {routes.map(route => (
-        <NavBarContext.Provider value={route} key={route}>
+        <NavBarProvider value={route} key={route}>
           <GenericNavLink href={`/${route}`}>{children}</GenericNavLink>
-        </NavBarContext.Provider>
+        </NavBarProvider>
       ))}
     </nav>
   )

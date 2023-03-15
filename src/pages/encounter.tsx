@@ -1,46 +1,55 @@
 import type { NextPage } from 'next'
 import EncounterDetails from '~/components/EncounterDetails'
 import PokeballBtn from '~/components/btns/PokeballBtn'
-import { api } from '~/utils/api'
+import { useEncounter } from '~/hooks/queries/useEncounter'
+import { useCatch } from '~/hooks/mutations/useCatch'
+import { useImgError } from '~/hooks/mutations/useImgError'
 
 const Encounter: NextPage = () => {
-  const { data, isError, refetch, isFetching, isLoading } = api.pokemon.getEncounter.useQuery(
-    undefined,
-    {
-      enabled: false,
-      // refetchOnMount: false,
-      // refetchOnReconnect: false,
-      // refetchOnWindowFocus: false,
-    },
-  )
+  const {
+    encounterPokemon,
+    isEncounterError,
+    refetchEncounter,
+    isFecthinEncounter,
+    isLoadingEncounter,
+  } = useEncounter()
 
-  const { data: isCaught, mutate } = api.pokemon.catchPokemon.useMutation()
+  const { isCaught, catchPokemon } = useCatch()
 
-  const onFetchEncounter = () => {
-    void refetch()
+  const { sendImgError } = useImgError()
+
+  const onFetchEncounter = async () => {
+    void refetchEncounter()
   }
+
   const onThrowBall = () => {
-    if (!data) return
-    mutate({ pokedexNum: data.pokedexNum, email: 'test@gmail.com' })
+    if (!encounterPokemon) return
+    catchPokemon({ pokedexNum: encounterPokemon.pokedexNum })
     console.log(isCaught)
     if (isCaught) alert('You caught the pokemon!')
+  }
+  const onImgError = () => {
+    if (!encounterPokemon) return
+    void sendImgError(encounterPokemon.pokedexNum)
   }
   // return <Loader></Loader>
   return (
     <>
       <main className="col-main-layout-item flex h-full flex-1 flex-col items-center justify-center bg-grass bg-cover">
         {/* {isFetching ? : } */}
+        <button onClick={onFetchEncounter}>refetch test</button>
         <EncounterDetails
           onFetchEncounter={onFetchEncounter}
           // onThrowBall={onThrowBall}
-          data={data}
-          isError={isError}
-          isFetching={isFetching}
-          isLoading={isLoading}
+          data={encounterPokemon}
+          isError={isEncounterError}
+          isFetching={isFecthinEncounter}
+          isLoading={isLoadingEncounter}
+          onImgError={onImgError}
         />
         <section className="actions">
           {/* <button onClick={onFetchEncounter}>Get Encounter</button> */}
-          <PokeballBtn onClick={onThrowBall} title="Throw Ball"></PokeballBtn>
+          <PokeballBtn onThrow={onThrowBall} title="Throw Ball"></PokeballBtn>
         </section>
       </main>
     </>

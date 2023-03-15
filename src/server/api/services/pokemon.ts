@@ -3,6 +3,7 @@ import { customeFetch } from '~/server/util'
 import { getCollection } from '~/server/db'
 import type { ObjectId, WithId } from 'mongodb'
 import type { Pokemon, RawPokemon } from '~/types'
+import { readFile, writeFile } from 'fs/promises'
 
 export const pokemonService = {
   fetchPokemon,
@@ -54,6 +55,22 @@ function getRandomIsCaught() {
 function _getRandomPokedexNumber() {
   return Math.floor(Math.random() * 898) + 1
 }
+
+// let found: Set<number>
+// ;(() => {
+//   readFile('found.txt', 'utf-8')
+//     .then(data => new Set(data.split(',').map(Number)))
+//     .then(set => (found = set))
+//     .catch(() => (found = new Set()))
+// })()
+
+// async function _getRandomUniquePokedexNumber(): Promise<number> {
+//   const pokedexNum = _getRandomPokedexNumber()
+//   if (found.has(pokedexNum)) return _getRandomUniquePokedexNumber()
+//   found.add(pokedexNum)
+//   await writeFile('found.txt', Array.from(found).join(','))
+//   return pokedexNum
+// }
 
 async function _fetchPokemonFromApi(pokedexNum: number) {
   return customeFetch(`https://pokeapi.co/api/v2/pokemon/${pokedexNum}`)

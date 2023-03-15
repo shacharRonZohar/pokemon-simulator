@@ -1,12 +1,12 @@
 interface PokeballBtnProps {
-  onClick: () => void
+  onThrow: () => void
   title: string
 }
 
-const PokeballBtn: React.FC<PokeballBtnProps> = ({ onClick, title }) => {
+const PokeballBtn: React.FC<PokeballBtnProps> = ({ onThrow, title }) => {
   return (
     // <div className="flex flex-col items-center justify-center">
-    <div className="pokemon-btn" title={title} onClick={onClick}></div>
+    <div className="pokemon-btn" title={title} onClick={onThrow}></div>
     // </div>
   )
 }

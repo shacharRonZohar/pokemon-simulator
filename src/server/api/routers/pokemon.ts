@@ -1,3 +1,4 @@
+import { appendFile, readFile } from 'fs/promises'
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
@@ -14,6 +15,11 @@ interface Pokemon {
 type RawPokemon = Omit<Pokemon, '_id'>
 
 export const pokemonRouter = createTRPCRouter({
+  getAll: publicProcedure.query(async () => {
+    const res = await (await getCollection('pokemon')).find({}).toArray()
+    console.log(res)
+    return res
+  }),
   getEncounter: publicProcedure.query(async () => {
     return pokemonService.getRandomPokemon()
   }),
@@ -29,6 +35,7 @@ export const pokemonRouter = createTRPCRouter({
       try {
         const pokemonInDb = await pokemonService.fetchPokemon(pokedexNum)
         const isCaught = pokemonService.getRandomIsCaught()
+        console.log('🚀 ~ file: pokemon.ts:46 ~ .mutation ~ isCaught:', isCaught)
         if (!isCaught) return false
 
         await pokemonService.addPokemonToUser(email, pokemonInDb._id)
@@ -38,9 +45,9 @@ export const pokemonRouter = createTRPCRouter({
         return false
       }
     }),
-  getAll: publicProcedure.query(async () => {
-    const res = await (await getCollection('pokemon')).find({}).toArray()
-    console.log(res)
-    return res
+
+  imgError: publicProcedure.input(z.number()).mutation(async ({ input }) => {
+    await appendFile('imgErrors.txt', `${input}\n`)
+    console.log(input)
   }),
 })
